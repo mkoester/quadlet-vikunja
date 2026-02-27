@@ -15,7 +15,7 @@ Group=1000
 
 # Environment variables
 EnvironmentFile=%h/.config/containers/systemd/vikunja.env
-EnvironmentFile=-%h/.config/containers/systemd/vikunja.override.env
+EnvironmentFile=%h/.config/containers/systemd/vikunja.override.env
 
 # Volumes
 # /db — SQLite database (VIKUNJA_DATABASE_PATH=/db/vikunja.db)

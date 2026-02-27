@@ -45,11 +45,11 @@ sudo -u vikunja ln -s $REPO/vikunja.env ~vikunja/.config/containers/systemd/viku
 sudo -u vikunja ln -s $REPO/vikunja.override.env ~vikunja/.config/containers/systemd/vikunja.override.env
 
 # 7. Reload and start
-sudo -u vikunja systemctl --user daemon-reload
-sudo -u vikunja systemctl --user start vikunja
+sudo -u vikunja XDG_RUNTIME_DIR=/run/user/$(id -u vikunja) systemctl --user daemon-reload
+sudo -u vikunja XDG_RUNTIME_DIR=/run/user/$(id -u vikunja) systemctl --user start vikunja
 
 # 8. Verify
-sudo -u vikunja systemctl --user status vikunja
+sudo -u vikunja XDG_RUNTIME_DIR=/run/user/$(id -u vikunja) systemctl --user status vikunja
 ```
 
 ## Configuration
@@ -99,8 +99,8 @@ sudo -u vikunja ln -s $REPO/vikunja-backup.service ~vikunja/.config/systemd/user
 sudo -u vikunja ln -s $REPO/vikunja-backup.timer ~vikunja/.config/systemd/user/vikunja-backup.timer
 
 # 3. Enable and start the timer
-sudo -u vikunja systemctl --user daemon-reload
-sudo -u vikunja systemctl --user enable --now vikunja-backup.timer
+sudo -u vikunja XDG_RUNTIME_DIR=/run/user/$(id -u vikunja) systemctl --user daemon-reload
+sudo -u vikunja XDG_RUNTIME_DIR=/run/user/$(id -u vikunja) systemctl --user enable --now vikunja-backup.timer
 ```
 
 ### On the remote (backup) machine
@@ -117,9 +117,9 @@ rsync -az backupuser@vikunja-host:/var/backups/vikunja/ /path/to/local/backup/vi
 - The image is built `FROM scratch` (Go binary only) — no health check is possible from inside the container.
 - `AutoUpdate=registry` is enabled; activate the timer once to get automatic image updates:
   ```sh
-  sudo -u vikunja systemctl --user enable --now podman-auto-update.timer
+  sudo -u vikunja XDG_RUNTIME_DIR=/run/user/$(id -u vikunja) systemctl --user enable --now podman-auto-update.timer
   ```
 - To prune old images automatically, enable the system-wide prune timer (see [image pruning setup](https://github.com/mkoester/quadlet-my-guidelines#image-pruning) for the one-time system setup). Replace `30` with the desired retention period in days:
   ```sh
-  sudo -u vikunja systemctl --user enable --now podman-image-prune@30.timer
+  sudo -u vikunja XDG_RUNTIME_DIR=/run/user/$(id -u vikunja) systemctl --user enable --now podman-image-prune@30.timer
   ```
