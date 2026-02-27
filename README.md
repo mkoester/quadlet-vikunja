@@ -16,7 +16,10 @@ This project was created with the help of Claude Code and https://github.com/mko
 
 ## Setup
 
-Run these commands from the root of this repository.
+```sh
+REPO_URL=https://github.com/mkoester/quadlet-vikunja.git
+REPO=~vikunja/quadlet-vikunja
+```
 
 ```sh
 # 1. Create service user (regular user, home in /var/lib)
@@ -25,23 +28,27 @@ sudo useradd -m -d /var/lib/vikunja -s /usr/sbin/nologin vikunja
 # 2. Enable linger
 sudo loginctl enable-linger vikunja
 
-# 3. Create quadlet and data directories
+# 3. Clone this repo into the service user's home
+sudo -u vikunja git clone $REPO_URL $REPO
+
+# 4. Create quadlet and data directories
 sudo -u vikunja mkdir -p ~vikunja/.config/containers/systemd
 sudo -u vikunja mkdir -p ~vikunja/{db,files}
 
-# 4. Symlink .container and .env from the repo
-sudo -u vikunja ln -s $(pwd)/vikunja.container ~vikunja/.config/containers/systemd/vikunja.container
-sudo -u vikunja ln -s $(pwd)/vikunja.env ~vikunja/.config/containers/systemd/vikunja.env
-
 # 5. Create .override.env from template and fill in required values
-sudo -u vikunja cp $(pwd)/vikunja.override.env.template ~vikunja/.config/containers/systemd/vikunja.override.env
-sudo -u vikunja nano ~vikunja/.config/containers/systemd/vikunja.override.env
+sudo -u vikunja cp $REPO/vikunja.override.env.template $REPO/vikunja.override.env
+sudo -u vikunja nano $REPO/vikunja.override.env
 
-# 6. Reload and start
+# 6. Symlink all quadlet files from the repo
+sudo -u vikunja ln -s $REPO/vikunja.container ~vikunja/.config/containers/systemd/vikunja.container
+sudo -u vikunja ln -s $REPO/vikunja.env ~vikunja/.config/containers/systemd/vikunja.env
+sudo -u vikunja ln -s $REPO/vikunja.override.env ~vikunja/.config/containers/systemd/vikunja.override.env
+
+# 7. Reload and start
 sudo -u vikunja systemctl --user daemon-reload
 sudo -u vikunja systemctl --user start vikunja
 
-# 7. Verify
+# 8. Verify
 sudo -u vikunja systemctl --user status vikunja
 ```
 
@@ -88,8 +95,8 @@ sudo chmod 750 /var/backups/vikunja
 
 # 2. Symlink the backup service and timer from the repo
 sudo -u vikunja mkdir -p ~vikunja/.config/systemd/user
-sudo -u vikunja ln -s $(pwd)/vikunja-backup.service ~vikunja/.config/systemd/user/vikunja-backup.service
-sudo -u vikunja ln -s $(pwd)/vikunja-backup.timer ~vikunja/.config/systemd/user/vikunja-backup.timer
+sudo -u vikunja ln -s $REPO/vikunja-backup.service ~vikunja/.config/systemd/user/vikunja-backup.service
+sudo -u vikunja ln -s $REPO/vikunja-backup.timer ~vikunja/.config/systemd/user/vikunja-backup.timer
 
 # 3. Enable and start the timer
 sudo -u vikunja systemctl --user daemon-reload
