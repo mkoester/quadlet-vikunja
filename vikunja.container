@@ -22,6 +22,7 @@ EnvironmentFile=%h/.config/containers/systemd/vikunja.override.env
 # /app/vikunja/files — uploaded file attachments
 Volume=%h/db:/db:Z
 Volume=%h/files:/app/vikunja/files:Z
+Volume=%h/cache:/app/vikunja/.cache:Z
 
 # Port mapping — bind to localhost; Caddy reverse proxy handles external access
 PublishPort=127.0.0.1:3456:3456

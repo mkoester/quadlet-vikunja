@@ -33,7 +33,7 @@ sudo -u vikunja git clone $REPO_URL $REPO
 
 # 4. Create quadlet and data directories
 sudo -u vikunja mkdir -p ~vikunja/.config/containers/systemd
-sudo -u vikunja mkdir -p ~vikunja/{db,files}
+sudo -u vikunja mkdir -p ~vikunja/{db,files,cache}
 
 # 5. Create .override.env from template and fill in required values
 sudo -u vikunja cp $REPO/vikunja.override.env.template $REPO/vikunja.override.env
@@ -114,6 +114,7 @@ rsync -az backupuser@vikunja-host:/var/backups/vikunja/ /path/to/local/backup/vi
 - Port `3456` is bound to `127.0.0.1` only — place a reverse proxy in front for external access.
 - The SQLite database is stored at `~vikunja/db/vikunja.db` on the host.
 - Uploaded file attachments are stored at `~vikunja/files/` on the host.
+- The application cache is stored at `~vikunja/cache/` on the host (bind-mounted as `/app/vikunja/.cache` in the container).
 - The image is built `FROM scratch` (Go binary only) — no health check is possible from inside the container.
 - `AutoUpdate=registry` is enabled; activate the timer once to get automatic image updates:
   ```sh
