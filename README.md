@@ -17,14 +17,14 @@ This project was created with the help of Claude Code and https://github.com/mko
 ## Setup
 
 ```sh
+# 1. Create service user (regular user, home in /var/lib)
+sudo useradd -m -d /var/lib/vikunja -s /usr/sbin/nologin vikunja
+
 REPO_URL=https://github.com/mkoester/quadlet-vikunja.git
 REPO=~vikunja/quadlet-vikunja
 ```
 
 ```sh
-# 1. Create service user (regular user, home in /var/lib)
-sudo useradd -m -d /var/lib/vikunja -s /usr/sbin/nologin vikunja
-
 # 2. Enable linger
 sudo loginctl enable-linger vikunja
 
