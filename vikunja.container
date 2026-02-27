@@ -1,0 +1,36 @@
+[Unit]
+Description=Vikunja to-do and project management
+After=network-online.target
+Wants=network-online.target
+
+[Container]
+Image=docker.io/vikunja/vikunja:latest
+AutoUpdate=registry
+
+# User Namespace Mapping - Container UID 1000 = Host UID (vikunja)
+# Confirmed via: podman inspect docker.io/vikunja/vikunja:latest --format '{{.Config.User}}'
+UserNS=keep-id:uid=1000,gid=1000
+User=1000
+Group=1000
+
+# Environment variables
+EnvironmentFile=%h/.config/containers/systemd/vikunja.env
+EnvironmentFile=-%h/.config/containers/systemd/vikunja.override.env
+
+# Volumes
+# /db — SQLite database (VIKUNJA_DATABASE_PATH=/db/vikunja.db)
+# /app/vikunja/files — uploaded file attachments
+Volume=%h/db:/db:Z
+Volume=%h/files:/app/vikunja/files:Z
+
+# Port mapping — bind to localhost; Caddy reverse proxy handles external access
+PublishPort=127.0.0.1:3456:3456
+
+# No HealthCmd: image is built FROM scratch (Go binary only, no curl/wget available)
+
+[Service]
+Restart=always
+TimeoutStartSec=900
+
+[Install]
+WantedBy=default.target

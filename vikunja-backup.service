@@ -1,0 +1,9 @@
+[Unit]
+Description=Vikunja backup (database + files)
+
+[Service]
+Type=oneshot
+# SQLite online backup (no service downtime)
+ExecStart=/usr/bin/sqlite3 %h/db/vikunja.db ".backup /var/backups/vikunja/vikunja.db"
+# Incremental copy of uploaded file attachments
+ExecStart=/usr/bin/rsync -a --delete %h/files/ /var/backups/vikunja/files/
