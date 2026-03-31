@@ -6,4 +6,4 @@ Type=oneshot
 # SQLite online backup (no service downtime)
 ExecStart=/usr/bin/sqlite3 %h/db/vikunja.db ".backup /var/backups/vikunja/vikunja.db"
 # Incremental copy of uploaded file attachments
-ExecStart=/usr/bin/rsync -a --delete %h/files/ /var/backups/vikunja/files/
+ExecStart=/usr/bin/rsync -a --delete --chmod=Dg+x,Fg+r %h/files/ /var/backups/vikunja/files/
